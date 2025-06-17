@@ -2,37 +2,39 @@ pipeline {
     agent any
 
     tools {
-        maven 'M3' // Define this in Jenkins global tools config
+        maven 'Maven 3.8.6'
     }
 
     environment {
-        IMAGE_NAME = 'springboot-jenkins-docker'
+        IMAGE_NAME = 'my-spring-boot-app'
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/your-user/your-repo.git'
+                git url: 'https://github.com/Naresh617/DockerK8.git'
             }
         }
 
-        stage('Build') {
+        stage('Build JAR') {
             steps {
                 sh './mvnw clean package -DskipTests'
             }
         }
 
-        stage('Docker Build') {
+        stage('Build Docker Image') {
             steps {
                 script {
-                    docker.build("${IMAGE_NAME}:${env.BUILD_ID}")
+                    docker.build("${IMAGE_NAME}")
                 }
             }
         }
 
-        stage('Run Docker Image') {
+        stage('Deploy') {
             steps {
-                sh "docker run -d -p 8080:8080 ${IMAGE_NAME}:${env.BUILD_ID}"
+                sh "docker stop ${IMAGE_NAME} || true"
+                sh "docker rm ${IMAGE_NAME} || true"
+                sh "docker run -d --name ${IMAGE_NAME} -p 8080:8080 ${IMAGE_NAME}"
             }
         }
     }
