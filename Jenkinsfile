@@ -11,8 +11,10 @@ pipeline {
 
     stages {
         stage('Checkout') {
-            steps {
-                git url: 'https://github.com/Naresh617/DockerK8.git'
+           steps {
+                git url: 'https://github.com/Naresh617/DockerK8.git',
+                    branch: 'main',
+                    credentialsId: 'ac061f6e-5461-42b3-b0c0-5d89e29457ef'
             }
         }
 
