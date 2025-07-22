@@ -21,21 +21,13 @@ pipeline {
                 sh './mvnw clean package -DskipTests'
             }
         }
-
-        stage('Build Docker Image') {
+        
+        stage('Run Application') {
             steps {
-                script {
-                    docker.build("${IMAGE_NAME}")
-                }
+                bat 'start java -jar target\\*.jar'
             }
         }
 
-        stage('Deploy') {
-            steps {
-                sh "docker stop ${IMAGE_NAME} || true"
-                sh "docker rm ${IMAGE_NAME} || true"
-                sh "docker run -d --name ${IMAGE_NAME} -p 8080:8080 ${IMAGE_NAME}"
-            }
-        }
+        
     }
 }
